@@ -112,12 +112,9 @@
     // ส่วนตั้งค่าระบบ (กรุณาแก้ไขตรงนี้)
     // ============================================
     
-    // 1. ใส่ Imgur Client ID (ถ้าไม่มี ใช้ตัว Demo นี้ไปก่อนได้)
-    const IMGUR_CLIENT_ID = 'bda6121f00845f9'; 
-
-    // 2. ใส่ Google Apps Script URL ที่ได้จากขั้นตอนที่ 1 ลงในช่องนี้
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywH1YZNpMGz624iGkYauIhSU5WdHzOsC7JU0HnAktgq5Sn3pI4sZYnnEwLezt7cF8ftw/exec';
-
+    // ใส่ URL ของ Google Apps Script ที่ได้จากการ Deploy ตรงนี้
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxx/exec'; 
+    
     // ============================================
 
     let currentPhotoData = null;
@@ -184,26 +181,7 @@
       document.getElementById('camera-input').value = '';
     }
 
-    // ฟังก์ชันอัปโหลดรูปไป Imgur
-    async function uploadImageToImgur(base64Data) {
-      const base64Image = base64Data.split(',')[1];
-      const formData = new FormData();
-      formData.append('image', base64Image);
-      try {
-        const response = await fetch('https://api.imgur.com/3/image', {
-          method: 'POST',
-          headers: { Authorization: `Client-ID ${IMGUR_CLIENT_ID}` },
-          body: formData
-        });
-        const data = await response.json();
-        if (data.success) return data.data.link;
-        else throw new Error('Imgur Upload Failed');
-      } catch (error) {
-        throw error;
-      }
-    }
-
-    // ฟังก์ชันหลัก: บันทึกเวลา
+    // ฟังก์ชันบันทึกเวลา (ฉบับ Google Drive - ไม่ใช้ Imgur แล้ว)
     async function recordTime(actionType) {
       if (isProcessing) return;
       
@@ -211,8 +189,8 @@
       if (!employeeName) { showToast('กรุณากรอกชื่อพนักงาน', 'warning'); return; }
       if (!currentPhotoData) { showToast('กรุณาถ่ายรูปก่อนลงเวลา', 'warning'); return; }
 
-      // เช็คว่าผู้ใช้ลืมใส่ Apps Script URL หรือไม่
-      if (APPS_SCRIPT_URL.includes('xxxx')) {
+      // เช็คว่าใส่ URL หรือยัง
+      if (APPS_SCRIPT_URL.includes('xxxx') || APPS_SCRIPT_URL === '') {
         showToast('กรุณาใส่ Apps Script URL ในโค้ดก่อน', 'error');
         return;
       }
@@ -220,41 +198,36 @@
       setLoading(true);
 
       try {
-        // 1. อัปโหลดรูปภาพ
-        showToast('กำลังอัปโหลดรูปภาพ...', 'warning');
-        const imageUrl = await uploadImageToImgur(currentPhotoData);
-        
-        // 2. เตรียมข้อมูล
         const now = new Date();
         const dateDisplay = now.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: 'numeric' });
         const timeDisplay = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', hour12: false });
         
-        const record = {
+        // เตรียมข้อมูลส่งให้ Google Script (ส่ง Base64 ไปตรงๆ)
+        const payload = {
           employee_name: employeeName,
           action_type: actionType,
-          photo_data: imageUrl,
+          photo_base64: currentPhotoData, // <-- ส่งรูปตัวเต็ม
           date_display: dateDisplay,
           time_display: timeDisplay
         };
 
-        // 3. ส่งข้อมูลไป Google Sheets
-        showToast('กำลังบันทึกลง Sheet...', 'warning');
+        showToast('กำลังบันทึกข้อมูลและอัปโหลดรูป...', 'warning');
         
-        // ใช้ mode: 'no-cors' เพื่อให้ Browser ยอมส่งข้อมูลข้าม Domain (Google) ได้
-        // ข้อเสียคือเราจะไม่รู้ว่า Server ตอบอะไรกลับมา แต่ถ้าส่งผ่าน มันจะเข้า Sheet แน่นอน
+        // ส่งข้อมูล (ใช้ mode: no-cors เพื่อให้ส่งผ่าน)
         await fetch(APPS_SCRIPT_URL, {
           method: 'POST',
           mode: 'no-cors', 
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(record)
+          body: JSON.stringify(payload)
         });
 
-        // 4. บันทึกสำเร็จ (อัปเดตหน้าจอ)
+        // สำเร็จ
         showToast(`${actionType}สำเร็จ - ${employeeName}`, 'success');
         resetPhoto();
 
-        // บันทึกลง LocalStorage เพื่อแสดงผลล่าสุดบนหน้าจอ
-        records.push(record);
+        // บันทึกลง LocalStorage (เพื่อโชว์หน้าเว็บ แต่จะไม่มีลิ้งก์รูปทันทีเพราะต้องรอ Google สร้าง)
+        const recordForDisplay = { ...payload, photo_data: '' }; 
+        records.push(recordForDisplay);
         localStorage.setItem('attendance_records', JSON.stringify(records));
         renderRecords();
 
@@ -286,6 +259,11 @@
           ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"/>'
           : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/>';
         
+        // ถ้ามีรูป (ซึ่ง local จะไม่มี) ให้โชว์ลิ้งก์
+        const photoHtml = record.photo_data && record.photo_data.startsWith('http')
+          ? `<a href="${record.photo_data}" target="_blank" class="text-xs text-sky-500 hover:underline block mt-1">ดูรูปถ่าย</a>` 
+          : `<span class="text-xs text-gray-400 block mt-1">บันทึกเรียบร้อย</span>`;
+
         return `
           <div class="flex items-center gap-3 p-3 ${bgColor} border rounded-xl">
             <div class="w-10 h-10 rounded-full ${isCheckin ? 'bg-green-500' : 'bg-red-500'} flex items-center justify-center">
@@ -294,7 +272,7 @@
             <div class="flex-1">
               <p class="font-medium text-gray-800">${record.employee_name}</p>
               <p class="text-sm text-gray-500">${record.date_display} - ${record.time_display}</p>
-              <a href="${record.photo_data}" target="_blank" class="text-xs text-sky-500 hover:underline block mt-1">ดูรูปถ่าย</a>
+              ${photoHtml}
             </div>
             <span class="px-3 py-1 rounded-full text-sm font-medium ${isCheckin ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'}">
               ${record.action_type}
@@ -309,7 +287,6 @@
       setInterval(updateDateTime, 1000);
       setupCamera();
       
-      // โหลดข้อมูลเก่าจากเครื่อง
       const saved = localStorage.getItem('attendance_records');
       if (saved) {
         records = JSON.parse(saved);
