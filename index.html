@@ -4,22 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ร้านพอใจสระด่วน - ระบบลงเวลา</title>
+  
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <style>
-    body { box-sizing: border-box; font-family: 'Prompt', sans-serif; -webkit-tap-highlight-color: transparent; }
-    .gradient-bg { background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f7fa 100%); }
-    .card-shadow { box-shadow: 0 10px 40px rgba(0, 150, 200, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05); }
-    .btn-press { transition: all 0.15s ease; }
-    .btn-press:active { transform: scale(0.96); }
-    .toast { animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; }
-    @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
-    .photo-preview { animation: scaleIn 0.3s ease; }
-    @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .pulse-ring { animation: pulse 2s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
-  </style>
+  <link rel="stylesheet" href="style.css">
  </head>
  <body class="h-full">
   <div id="app" class="h-full gradient-bg overflow-auto relative">
@@ -55,9 +43,15 @@
             <span data-i18n="labelName">ชื่อเล่นพนักงาน</span>
          </span> 
        </label> 
-       <input type="text" id="employee-name" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-sky-400 focus:outline-none transition-colors text-lg" placeholder="กรอกชื่อเล่น...">
+       
+       <select id="employee-name" class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-sky-400 focus:outline-none transition-colors text-lg bg-white text-gray-700 cursor-pointer">
+         <option value="" disabled selected data-i18n="placeholderName">เลือกชื่อของคุณ...</option>
+         
+         <option value="พิ้งกี่ (Pinkky)">พิ้งกี่ (Pinkky)</option>
+         <option value="ลิลลี่ (Lily)">ลิลลี่ (Lily)</option>
+         <option value="มันนี่ (Money)">มันนี่ (Money)</option>
+       </select>
      </div>
-
      <div class="mb-5">
        <label class="block text-gray-600 text-sm font-medium mb-2"> 
          <span class="flex items-center gap-2">
@@ -155,7 +149,7 @@
         appTitle: "ร้านพอใจสระด่วน",
         appSubtitle: "ระบบลงเวลาพนักงาน",
         labelName: "ชื่อเล่นพนักงาน",
-        placeholderName: "กรอกชื่อเล่น...",
+        placeholderName: "เลือกชื่อของคุณ...", 
         labelShift: "เลือกกะเข้างาน",
         shiftMorning: "กะเช้า (09:00)",
         shiftAfternoon: "กะบ่าย (15:00)",
@@ -166,7 +160,7 @@
         warningPhoto: "กรุณาถ่ายรูปก่อนลงเวลา",
         recentRecords: "บันทึกล่าสุด",
         loading: "กำลังบันทึกข้อมูล...",
-        toastEmptyName: "กรุณากรอกชื่อพนักงาน",
+        toastEmptyName: "กรุณาเลือกชื่อพนักงาน",
         toastEmptyShift: "กรุณาเลือกกะงานก่อน",
         toastEmptyPhoto: "กรุณาถ่ายรูปก่อนลงเวลา",
         toastProcessing: "กำลังบันทึกข้อมูลและอัปโหลดรูป...",
@@ -181,7 +175,7 @@
         appTitle: "Porjai Salon",
         appSubtitle: "Attendance System",
         labelName: "Nickname",
-        placeholderName: "Enter nickname...",
+        placeholderName: "Select your name...",
         labelShift: "Select Shift",
         shiftMorning: "Morning (09:00)",
         shiftAfternoon: "Afternoon (15:00)",
@@ -192,7 +186,7 @@
         warningPhoto: "Please take a photo first",
         recentRecords: "Recent Records",
         loading: "Saving data...",
-        toastEmptyName: "Please enter nickname",
+        toastEmptyName: "Please select name",
         toastEmptyShift: "Please select a shift",
         toastEmptyPhoto: "Please take a photo first",
         toastProcessing: "Saving data and uploading...",
@@ -218,7 +212,10 @@
         if (texts[key]) el.textContent = texts[key];
       });
 
-      document.getElementById('employee-name').placeholder = texts.placeholderName;
+      // สำหรับ Dropdown เปลี่ยนเฉพาะ text ของ option แรก
+      const firstOption = document.querySelector('#employee-name option[disabled]');
+      if(firstOption) firstOption.textContent = texts.placeholderName;
+
       document.getElementById('lang-text').textContent = texts.langBtnText;
       document.getElementById('lang-icon').textContent = texts.langBtnIcon;
 
@@ -231,19 +228,16 @@
     let currentPhotoData = null;
     let records = [];
     let isProcessing = false;
-    let currentShift = null; // ตัวแปรเก็บค่ากะงาน
+    let currentShift = null; 
 
-    // ฟังก์ชันเลือกกะ
     function selectShift(time) {
       currentShift = time;
       
-      // รีเซ็ตปุ่มทั้งหมด
       document.querySelectorAll('.shift-btn').forEach(btn => {
         btn.classList.remove('border-sky-500', 'bg-sky-50', 'text-sky-700', 'ring-2', 'ring-sky-200');
         btn.classList.add('border-gray-200', 'text-gray-500');
       });
 
-      // ไฮไลท์ปุ่มที่เลือก
       const activeId = time === '09:00' ? 'btn-shift-morning' : 'btn-shift-afternoon';
       const activeBtn = document.getElementById(activeId);
       if(activeBtn) {
@@ -252,7 +246,6 @@
       }
     }
 
-    // ระบบเวลา
     function updateDateTime() {
       const now = new Date();
       const locale = currentLang === 'th' ? 'th-TH' : 'en-GB'; 
@@ -271,7 +264,6 @@
       });
     }
 
-    // ระบบแจ้งเตือน (Toast)
     function showToast(messageKey, type = 'success', dynamicText = '') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
@@ -326,7 +318,6 @@
       document.getElementById('camera-input').value = '';
     }
 
-    // ฟังก์ชันบันทึกเวลา (อัปเดตใหม่ รับค่า Shift)
     async function recordTime(actionTypeKey) {
       if (isProcessing) return;
       
@@ -334,7 +325,7 @@
       
       // Validation
       if (!employeeName) { showToast('toastEmptyName', 'warning'); return; }
-      if (!currentShift) { showToast('toastEmptyShift', 'warning'); return; } // เช็คกะ
+      if (!currentShift) { showToast('toastEmptyShift', 'warning'); return; } 
       if (!currentPhotoData) { showToast('toastEmptyPhoto', 'warning'); return; }
 
       if (APPS_SCRIPT_URL.includes('xxxx') || APPS_SCRIPT_URL === '') {
@@ -354,7 +345,7 @@
         
         const payload = {
           employee_name: employeeName,
-          shift: currentShift, // ส่งค่ากะไปที่ Sheet
+          shift: currentShift,
           action_type: actionType,
           photo_base64: currentPhotoData,
           date_display: dateDisplay,
@@ -373,7 +364,6 @@
         showToast('toastSuccess', 'success', `${actionDisplay} - ${employeeName}`);
         resetPhoto();
 
-        // บันทึก LocalStorage (เพื่อแสดงผลลัพธ์ทันที)
         const recordForDisplay = { ...payload, photo_data: '' }; 
         records.push(recordForDisplay);
         localStorage.setItem('attendance_records', JSON.stringify(records));
@@ -403,7 +393,6 @@
       recordsList.innerHTML = recentRecords.map(record => {
         const isCheckin = record.action_type === 'เข้างาน';
         const displayAction = isCheckin ? texts.btnCheckIn : texts.btnCheckOut;
-        // แสดงกะงานในประวัติด้วย (ถ้ามี)
         const shiftInfo = record.shift ? ` (${record.shift})` : '';
 
         const bgColor = isCheckin ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';

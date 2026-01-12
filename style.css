@@ -1,0 +1,66 @@
+/* style.css */
+body { 
+    box-sizing: border-box; 
+    font-family: 'Prompt', sans-serif; 
+    -webkit-tap-highlight-color: transparent; 
+}
+
+.gradient-bg { 
+    background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 50%, #e0f7fa 100%); 
+}
+
+.card-shadow { 
+    box-shadow: 0 10px 40px rgba(0, 150, 200, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05); 
+}
+
+.btn-press { 
+    transition: all 0.15s ease; 
+}
+
+.btn-press:active { 
+    transform: scale(0.96); 
+}
+
+.toast { 
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; 
+}
+
+@keyframes slideIn { 
+    from { transform: translateY(-20px); opacity: 0; } 
+    to { transform: translateY(0); opacity: 1; } 
+}
+
+@keyframes fadeOut { 
+    from { opacity: 1; } 
+    to { opacity: 0; } 
+}
+
+.photo-preview { 
+    animation: scaleIn 0.3s ease; 
+}
+
+@keyframes scaleIn { 
+    from { transform: scale(0.8); opacity: 0; } 
+    to { transform: scale(1); opacity: 1; } 
+}
+
+.pulse-ring { 
+    animation: pulse 2s infinite; 
+}
+
+@keyframes pulse { 
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
+}
+
+/* เพิ่ม CSS สำหรับ Dropdown ให้ดูสวยงาม */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5em;
+}
