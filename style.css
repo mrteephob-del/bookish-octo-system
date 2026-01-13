@@ -1,7 +1,9 @@
 /* style.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap');
+
 body { 
     box-sizing: border-box; 
-    font-family: 'Prompt', sans-serif; 
+    font-family: 'Prompt', 'Noto Sans Myanmar', sans-serif; 
     -webkit-tap-highlight-color: transparent; 
 }
 
@@ -21,6 +23,7 @@ body {
     transform: scale(0.96); 
 }
 
+/* Toast Notification Animation */
 .toast { 
     animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; 
 }
@@ -35,6 +38,7 @@ body {
     to { opacity: 0; } 
 }
 
+/* Camera & Photo Animations */
 .photo-preview { 
     animation: scaleIn 0.3s ease; 
 }
@@ -54,13 +58,25 @@ body {
     100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } 
 }
 
-/* เพิ่ม CSS สำหรับ Dropdown ให้ดูสวยงาม */
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 1.5em;
+/* Dropdown Animations */
+.dropdown-enter {
+    transform-origin: top;
+    animation: dropdownScaleIn 0.2s ease forwards;
+}
+
+@keyframes dropdownScaleIn {
+    from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #e2e8f0;
+    border-radius: 20px;
 }
