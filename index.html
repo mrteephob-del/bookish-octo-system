@@ -7,6 +7,21 @@
   
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* เพิ่มสไตล์เล็กน้อยเพื่อให้ Dropdown ดูลื่นไหลขึ้น */
+    .dropdown-enter {
+      animation: fadeInDown 0.2s ease-out;
+    }
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .btn-press:active { transform: scale(0.95); }
+    .gradient-bg { background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+    .card-shadow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+  </style>
  </head>
  <body class="h-full">
   <div id="app" class="h-full gradient-bg overflow-auto relative">
@@ -93,7 +108,7 @@
          </div>
        </button>
 
-       <div id="employee-dropdown-menu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-20 custom-scrollbar">
+       <div id="employee-dropdown-menu" class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 overflow-hidden z-20 custom-scrollbar max-h-64 overflow-y-auto">
          <ul class="py-1">
            <li>
              <button type="button" onclick="selectEmployee('พิ้งกี่ (Pinkky)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
@@ -108,23 +123,23 @@
              </button>
            </li>
            <li>
-             <button type="button" onclick="selectEmployee('มันนี่ (Money)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group">
+             <button type="button" onclick="selectEmployee('มันนี่ (Money)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
                <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-500 font-bold text-lg group-hover:scale-110 transition-transform">M</div>
                <span class="text-gray-700 font-medium text-lg">มันนี่ (Money)</span>
              </button>
            </li>
            <li>
-              <button type="button" onclick="selectEmployee('สุ (Su)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
-                <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-500 font-bold text-lg group-hover:scale-110 transition-transform">S</div>
-                <span class="text-gray-700 font-medium text-lg">สุ (Su)</span>
-              </button>
-            </li>
-            <li>
-              <button type="button" onclick="selectEmployee('นาเดียร์ (Nadia)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
-                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 font-bold text-lg group-hover:scale-110 transition-transform">N</div>
-                <span class="text-gray-700 font-medium text-lg">นาเดียร์ (Nadia)</span>
-              </button>
-            </li>
+             <button type="button" onclick="selectEmployee('สุ (Su)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
+               <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-500 font-bold text-lg group-hover:scale-110 transition-transform">S</div>
+               <span class="text-gray-700 font-medium text-lg">สุ (Su)</span>
+             </button>
+           </li>
+           <li>
+             <button type="button" onclick="selectEmployee('นาเดียร์ (Nadia)')" class="w-full text-left px-4 py-3 hover:bg-sky-50 transition-colors flex items-center gap-3 group border-b border-gray-50">
+               <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-500 font-bold text-lg group-hover:scale-110 transition-transform">N</div>
+               <span class="text-gray-700 font-medium text-lg">นาเดียร์ (Nadia)</span>
+             </button>
+           </li>
          </ul>
        </div>
      </div>
@@ -137,11 +152,11 @@
          </span> 
        </label> 
        <div class="grid grid-cols-2 gap-3">
-         <button type="button" onclick="selectShift('09:00')" id="btn-shift-morning" class="shift-btn py-3 px-2 rounded-xl border-2 border-gray-200 text-gray-500 font-medium transition-all hover:border-sky-300 flex flex-col items-center justify-center gap-1 bg-white">
+         <button type="button" onclick="selectShift('08:00')" id="btn-shift-morning" class="shift-btn py-3 px-2 rounded-xl border-2 border-gray-200 text-gray-500 font-medium transition-all hover:border-sky-300 flex flex-col items-center justify-center gap-1 bg-white">
            <svg class="w-6 h-6 mb-1 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
            <span data-i18n="shiftMorning">รอบเช้า (08:00)</span>
          </button>
-         <button type="button" onclick="selectShift('15:00')" id="btn-shift-afternoon" class="shift-btn py-3 px-2 rounded-xl border-2 border-gray-200 text-gray-500 font-medium transition-all hover:border-sky-300 flex flex-col items-center justify-center gap-1 bg-white">
+         <button type="button" onclick="selectShift('16:00')" id="btn-shift-afternoon" class="shift-btn py-3 px-2 rounded-xl border-2 border-gray-200 text-gray-500 font-medium transition-all hover:border-sky-300 flex flex-col items-center justify-center gap-1 bg-white">
            <svg class="w-6 h-6 mb-1 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
            <span data-i18n="shiftAfternoon">รอบบ่าย (16:00)</span>
          </button>
@@ -162,7 +177,7 @@
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
            </button>
          </div>
-         <button id="camera-btn" class="w-full h-48 border-3 border-dashed border-sky-300 rounded-xl flex flex-col items-center justify-center gap-3 bg-sky-50/50 hover:bg-sky-100/50 transition-colors btn-press pulse-ring">
+         <button id="camera-btn" class="w-full h-48 border-3 border-dashed border-sky-300 rounded-xl flex flex-col items-center justify-center gap-3 bg-sky-50/50 hover:bg-sky-100/50 transition-colors btn-press">
           <div class="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center">
            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </div>
@@ -225,8 +240,8 @@
         labelName: "ชื่อเล่นพนักงาน",
         placeholderName: "เลือกชื่อของคุณ...", 
         labelShift: "เลือกรอบเข้างาน",
-        shiftMorning: "รอบเช้า (09:00)",
-        shiftAfternoon: "รอบบ่าย (15:00)",
+        shiftMorning: "รอบเช้า (08:00)",
+        shiftAfternoon: "รอบบ่าย (16:00)",
         labelPhoto: "ถ่ายรูปยืนยันตัวตน",
         tapToPhoto: "แตะเพื่อถ่ายรูป",
         btnCheckIn: "เข้างาน",
@@ -250,8 +265,8 @@
         labelName: "Nickname",
         placeholderName: "Select your name...",
         labelShift: "Select Shift",
-        shiftMorning: "Morning (09:00)",
-        shiftAfternoon: "Afternoon (15:00)",
+        shiftMorning: "Morning (08:00)",
+        shiftAfternoon: "Afternoon (16:00)",
         labelPhoto: "Take Photo",
         tapToPhoto: "Tap to take photo",
         btnCheckIn: "Check In",
@@ -275,8 +290,8 @@
         labelName: "အမည်ပြောင်",
         placeholderName: "သင့်အမည်ကို ရွေးပါ...",
         labelShift: "အလုပ်ချိန်ရွေးပါ",
-        shiftMorning: "မနက်ပိုင်း (09:00)",
-        shiftAfternoon: "နေ့လည်ပိုင်း (15:00)",
+        shiftMorning: "မနက်ပိုင်း (08:00)",
+        shiftAfternoon: "နေ့လည်ပိုင်း (16:00)",
         labelPhoto: "ဓာတ်ပုံရိုက်ရန်",
         tapToPhoto: "ဓာတ်ပုံရိုက်ရန် နှိပ်ပါ",
         btnCheckIn: "အလုပ်ဝင်",
@@ -310,8 +325,7 @@
       event.stopPropagation();
       const menu = document.getElementById('lang-dropdown-menu');
       const arrow = document.getElementById('arrow-icon');
-      
-      closeEmployeeDropdown(); // Close other dropdown
+      closeEmployeeDropdown();
 
       if (menu.classList.contains('hidden')) {
         menu.classList.remove('hidden');
@@ -336,8 +350,7 @@
       const menu = document.getElementById('employee-dropdown-menu');
       const arrow = document.getElementById('employee-arrow-icon');
       const btn = document.getElementById('employee-btn-display');
-      
-      closeLangDropdown(); // Close other dropdown
+      closeLangDropdown();
 
       if (menu.classList.contains('hidden')) {
         menu.classList.remove('hidden');
@@ -354,7 +367,6 @@
       const menu = document.getElementById('employee-dropdown-menu');
       const arrow = document.getElementById('employee-arrow-icon');
       const btn = document.getElementById('employee-btn-display');
-      
       if (!menu) return;
       menu.classList.add('hidden');
       menu.classList.remove('dropdown-enter');
@@ -365,12 +377,10 @@
 
     function selectEmployee(name) {
       document.getElementById('employee-name').value = name;
-      
       const displayText = document.getElementById('selected-employee-text');
       displayText.textContent = name;
       displayText.classList.remove('text-gray-400');
       displayText.classList.add('text-gray-800', 'font-semibold');
-
       closeEmployeeDropdown();
     }
 
@@ -399,9 +409,7 @@
       const langIcons = { th: '🇹🇭', en: '🇺🇸', mm: '🇲🇲' };
       
       document.querySelectorAll('[data-i18n]').forEach(el => {
-        // Skip employee placeholder if selected
         if (el.id === 'selected-employee-text' && document.getElementById('employee-name').value !== '') return;
-        
         const key = el.getAttribute('data-i18n');
         if (texts[key]) el.textContent = texts[key];
       });
@@ -416,9 +424,7 @@
            else check.classList.add('opacity-0');
         }
       });
-
       renderRecords();
-      updateDateTime();
     }
 
     // --- Main Logic ---
@@ -429,7 +435,7 @@
         btn.classList.remove('border-sky-500', 'bg-sky-50', 'text-sky-700', 'ring-2', 'ring-sky-200');
         btn.classList.add('border-gray-200', 'text-gray-500');
       });
-      const activeId = time === '09:00' ? 'btn-shift-morning' : 'btn-shift-afternoon';
+      const activeId = time === '08:00' ? 'btn-shift-morning' : 'btn-shift-afternoon';
       const activeBtn = document.getElementById(activeId);
       if(activeBtn) {
         activeBtn.classList.remove('border-gray-200', 'text-gray-500');
@@ -440,7 +446,6 @@
     function updateDateTime() {
       const now = new Date();
       const locale = currentLang === 'th' ? 'th-TH' : 'en-GB'; 
-      
       document.getElementById('current-date').textContent = now.toLocaleDateString(locale, { 
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
       });
@@ -452,15 +457,17 @@
     function showToast(messageKey, type = 'success', dynamicText = '') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      
       let message = dictionary[currentLang][messageKey] || messageKey;
       if (dynamicText) message += ` - ${dynamicText}`;
 
       const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-amber-500';
-      toast.className = `toast ${bgColor} text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm`;
+      toast.className = `px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 max-w-sm text-white transition-opacity duration-300 ${bgColor}`;
       toast.innerHTML = `<span class="font-medium">${message}</span>`;
       container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
 
     function setLoading(show) {
@@ -505,20 +512,12 @@
 
     async function recordTime(actionTypeKey) {
       if (isProcessing) return;
-      
       const employeeName = document.getElementById('employee-name').value.trim();
-      
       if (!employeeName) { showToast('toastEmptyName', 'warning'); return; }
       if (!currentShift) { showToast('toastEmptyShift', 'warning'); return; } 
       if (!currentPhotoData) { showToast('toastEmptyPhoto', 'warning'); return; }
 
-      if (APPS_SCRIPT_URL.includes('xxxx') || APPS_SCRIPT_URL === '') {
-        showToast('กรุณาใส่ Apps Script URL ในโค้ดก่อน', 'error');
-        return;
-      }
-
       setLoading(true);
-
       const actionType = actionTypeKey === 'btnCheckIn' ? 'เข้างาน' : 'ออกงาน';
       const actionDisplay = dictionary[currentLang][actionTypeKey];
 
@@ -554,7 +553,6 @@
         renderRecords();
 
       } catch (error) {
-        console.error(error);
         showToast('toastError', 'error');
       } finally {
         setLoading(false);
@@ -565,11 +563,7 @@
       const recordsSection = document.getElementById('records-section');
       const recordsList = document.getElementById('records-list');
       const texts = dictionary[currentLang];
-      
-      if (records.length === 0) {
-        recordsSection.classList.add('hidden');
-        return;
-      }
+      if (records.length === 0) { recordsSection.classList.add('hidden'); return; }
 
       recordsSection.classList.remove('hidden');
       const recentRecords = records.slice().reverse().slice(0, 5); 
@@ -583,10 +577,6 @@
           ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14"/>'
           : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7"/>';
         
-        const photoHtml = record.photo_data && record.photo_data.startsWith('http')
-          ? `<a href="${record.photo_data}" target="_blank" class="text-xs text-sky-500 hover:underline block mt-1">${texts.viewPhoto}</a>` 
-          : `<span class="text-xs text-gray-400 block mt-1">${texts.recordSaved}</span>`;
-
         return `
           <div class="flex items-center gap-3 p-3 ${bgColor} border rounded-xl">
             <div class="w-10 h-10 rounded-full ${isCheckin ? 'bg-green-500' : 'bg-red-500'} flex items-center justify-center">
@@ -595,7 +585,7 @@
             <div class="flex-1">
               <p class="font-medium text-gray-800">${record.employee_name} <span class="text-xs text-gray-400 font-normal">${shiftInfo}</span></p>
               <p class="text-sm text-gray-500">${record.date_display} - ${record.time_display}</p>
-              ${photoHtml}
+              <span class="text-xs text-gray-400 block mt-1">${texts.recordSaved}</span>
             </div>
             <span class="px-3 py-1 rounded-full text-sm font-medium ${isCheckin ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'}">
               ${displayAction}
@@ -609,16 +599,10 @@
       updateDateTime();
       setInterval(updateDateTime, 1000);
       setupCamera();
-      
       const saved = localStorage.getItem('attendance_records');
-      if (saved) {
-        records = JSON.parse(saved);
-        renderRecords();
-      }
-
+      if (saved) { records = JSON.parse(saved); renderRecords(); }
       document.getElementById('checkin-btn').addEventListener('click', () => recordTime('btnCheckIn'));
       document.getElementById('checkout-btn').addEventListener('click', () => recordTime('btnCheckOut'));
-      
       updateInterfaceLanguage();
       document.body.addEventListener('click', closeDropdownOnClickOutside);
     }
